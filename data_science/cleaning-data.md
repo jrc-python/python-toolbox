@@ -265,9 +265,7 @@ print(results['team'].unique())
 # Many variations, can't fix with .replace()
 # Example: Corinthians, Corintians, Corinthian, Corintia, Corinthia
 
-categories
-# 0 Corinthians
-# 1 Palmeiras
+categories = ['Corinthians', 'Palmeiras']
 
 # For each correct category
 for team in categories['team']:
@@ -278,4 +276,48 @@ for team in categories['team']:
         # If high similarity score
         if potential_match[1] >= 80:
             results.loc[results['team'] == potential_match[0], 'team'] = team
+```
+
+### Generating pairs
+```
+import recordlinkage
+
+# Create indexing object
+indexer = recordlinkage.Index()
+
+# Generate pairs blocked on state
+indexer.block('state')
+pairs = indexer.index(census_A, census_B)
+
+# Create a Compare object
+compare_cl = recordlinkage.Compare()
+
+# Find exact matches for pairs of date_of_birth and state
+compare_cl.exact('date_of_birth', 'date_of_birth', label='date_of_birth')
+compare_cl.exact('state', 'state', label='state')
+
+# Find similar matches for pairs of surname and address_1 using string similarity
+compare_cl.string('surname', 'surname', threshold=0.85, label='surname')
+compare_cl.string('address_1', 'address_1', threshold=0.85, label='address_1')
+
+# Find matches
+potential_matches = compare_cl.compute(pairs, census_A, census_B)
+```
+
+### Linking dataframes
+```
+# Isolate matches with matching values for 3 or more columns
+matches = potential_matches[potential_matches.sum(axis = 1) >= 3]
+
+# Get indices for matching census_B rows only
+duplicate_rows = matches.index.get_level_values(1)
+
+# Find duplicates in census_B
+census_B_duplicates = census_B[census_B.index.isin(duplicate_rows)]
+
+# Find new rows in census_B
+census_B_new = census_B[~census_B.index.isin(duplicate_rows)]
+
+# Link the DataFrames
+full_census = census_A.append(census_B_new)
 ```
