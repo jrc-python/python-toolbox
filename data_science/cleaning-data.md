@@ -1,31 +1,60 @@
 # Cleaning Data in Python
 
-## Common data problems
-
-### Type of data
+## Data type constraints
 ```
-# Print the information of ride_sharing
-print(ride_sharing.info())
+# Import CSV file and output header
+sales = pd.read_csv('sales.csv')
+sales.head(2)
 
-# Print summary statistics of user_type column
-print(ride_sharing['user_type'].describe())
-```
+# Get data types of columns
+sales.dtypes
 
-### Summing strings and concatenating numbers
-```
-# Strip duration of minutes
-ride_sharing['duration_trim'] = ride_sharing['duration'].str.strip('minutes')
+# Get DataFrame information
+sales.info()
 
-# Convert duration to integer
-ride_sharing['duration_time'] = ride_sharing['duration_trim'].astype('int')
+# Revenue column is a string followed by a dollar sign ($)
+# If we sum it, it will concatenate the values
+sales['Revenue'].sum()
+# Example: 1213$567465$8346$
 
-# Write an assert statement making sure of conversion
+# Remove $ from Revenue column
+sales['Revenue'] = sales['Revenue'].str.strip('$')
+
+# Convert Revenue column to integer
+sales['Revenue'] = sales['Revenue'].astype('int')
+
+# Verify that Revenue is now an integer
 assert ride_sharing['duration_time'].dtype == 'int'
 
-# Print formed columns and calculate average ride duration 
-print(ride_sharing[['duration','duration_trim','duration_time']])
-print(ride_sharing['duration_time'].mean())
+# Convert to categorical
+df['marriage_status'] = df['marriage_status'].astype('category')
 ```
+
+### Numeric or categorical ?
+Categoricals are a pandas data type corresponding to categorical variables in statistics. A categorical variable takes on a limited, and usually fixed, number of possible values (categories; levels in R). Examples are gender, social class, blood type, country affiliation, observation time or rating.
+```
+# Before converting to categorical
+df['marriage_status'].describe()
+
+# mean 1.4
+# std 0.20
+# min 0.00
+# 50% 1.8
+
+# Convert to categorical
+df['marriage_status'] = df['marriage_status'].astype('category')
+
+# After converting to categorical
+df.describe()
+
+# count 241
+# unique 4
+# top 1
+# freq 120
+```
+
+## Data range constraints
+
 
 ### Data constraints
 ```
