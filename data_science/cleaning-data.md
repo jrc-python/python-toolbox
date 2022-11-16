@@ -369,7 +369,7 @@ devices['operating_system'] = devices['operating_system'].replace(mapping)
 devices['operating_system'].unique()
 ```
 
-##### Another example of remapping categories]
+##### Another example of remapping categories
 
 ```python
 # Create ranges for categories
