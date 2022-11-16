@@ -1,41 +1,27 @@
 # Cleaning Data in Python
 
 - [Cleaning Data in Python](#cleaning-data-in-python)
-  - [Data type constraints](#data-type-constraints)
-    - [Numeric or categorical](#numeric-or-categorical)
-  - [Finding out of range data](#finding-out-of-range-data)
-    - [Numeric data range constraints](#numeric-data-range-constraints)
-      - [Dropping out of range data](#dropping-out-of-range-data)
-      - [Setting custom minimums and maximums](#setting-custom-minimums-and-maximums)
+  - [Common data problems](#common-data-problems)
+    - [Data type constraints](#data-type-constraints)
     - [Date range constraints](#date-range-constraints)
-      - [Dropping values](#dropping-values)
-      - [Hardcoding dates with upper limit](#hardcoding-dates-with-upper-limit)
-  - [Uniqueness constraints](#uniqueness-constraints)
-    - [Finding duplicates](#finding-duplicates)
-    - [How to treat duplicated value](#how-to-treat-duplicated-value)
-    - [Grouping and aggregating duplicates](#grouping-and-aggregating-duplicates)
-    - [Another example of treating duplicates](#another-example-of-treating-duplicates)
-  - [Membership constraints](#membership-constraints)
-    - [Finding inconsistent categories](#finding-inconsistent-categories)
+    - [Uniqueness constraints](#uniqueness-constraints)
+  - [Text and categorical data problems](#text-and-categorical-data-problems)
+    - [Membership constraints](#membership-constraints)
     - [Categorical variables](#categorical-variables)
-      - [Uppercase or lowercase](#uppercase-or-lowercase)
-      - [Trailing spaces](#trailing-spaces)
-      - [Collapsing data into categories](#collapsing-data-into-categories)
-        - [Using qcut - can lead to errors](#using-qcut---can-lead-to-errors)
-        - [Using cut - better, more precise](#using-cut---better-more-precise)
-        - [Mapping categories to fewer ones](#mapping-categories-to-fewer-ones)
-        - [Another example of remapping categories](#another-example-of-remapping-categories)
-    - [Removing titles and taking names](#removing-titles-and-taking-names)
-    - [Keeping it descriptive](#keeping-it-descriptive)
+    - [Cleaning text data](#cleaning-text-data)
+  - [Advanced data problems](#advanced-data-problems)
     - [Uniform currencies](#uniform-currencies)
     - [Data integrity](#data-integrity)
     - [Completeness](#completeness)
       - [Missingness types](#missingness-types)
+  - [Record linkage](#record-linkage)
     - [Comparing strings](#comparing-strings)
     - [Generating pairs](#generating-pairs)
     - [Linking dataframes](#linking-dataframes)
 ---
-## Data type constraints
+## Common data problems
+
+### Data type constraints
 
 ```python
 # Import CSV file and output header
@@ -66,7 +52,7 @@ assert ride_sharing['duration_time'].dtype == 'int'
 df['marriage_status'] = df['marriage_status'].astype('category')
 ```
 
-### Numeric or categorical
+Numeric or categorical
 
 Categoricals are a pandas data type corresponding to categorical variables in statistics. A categorical variable takes on a limited, and usually fixed, number of possible values (categories; levels in R). Examples are gender, social class, blood type, country affiliation, observation time or rating.
 
@@ -94,16 +80,16 @@ df.describe()
 | top | 1 |
 | freq | 120 |
 
-## Finding out of range data
+Finding out of range data
 
-### Numeric data range constraints
+Numeric data range constraints
 
 ```python
 # Output movies with rating > 5
 movies[movies['avg_rating'] > 5]
 ```
 
-#### Dropping out of range data
+Dropping out of range data
 
 ```python
 # Drop values using filtering
@@ -117,7 +103,7 @@ movies.drop(movies[movies['avg_rating'] <= 5].index, inplace = True)
 assert movies['avg_rating'].max() <= 5
 ```
 
-#### Setting custom minimums and maximums
+Setting custom minimums and maximums
 
 ```python
 # Convert avg_rating > 5 to 5
@@ -148,7 +134,7 @@ user_signups.dtypes
 user_signups['subscription_date'] = pd.to_datetime(user_signups['subscription_date']).dt.date
 ```
 
-#### Dropping values
+Dropping values
 
 ```python
 today_date = dt.date.today()
@@ -160,7 +146,7 @@ user_signups = user_signups[user_signups['subscription_date'] <= today_date]
 user_signups.drop(user_signups[user_signups['subscription_date'] > today_date].index, inplace = True)
 ```
 
-#### Hardcoding dates with upper limit
+Hardcoding dates with upper limit
 
 ```python
 today_date = dt.date.today()
@@ -172,9 +158,9 @@ user_signups.loc[user_signups['subscription_date'] > today_date, 'subscription_d
 assert user_signups['subscription_date'].max().date() <= today_date
 ```
 
-## Uniqueness constraints
+### Uniqueness constraints
 
-### Finding duplicates
+Finding duplicates
 
 ```python
 # Get duplicates across all columns
@@ -197,7 +183,7 @@ duplicates = height_weight.duplicated(subset = column_names, keep = False)
 height_weight[duplicates].sort_values(by = 'first_name')
 ```
 
-### How to treat duplicated value
+How to treat duplicated value
 
 Two important parameters for the .drop_duplicates method:
 * subset: List of column names to check for duplication
@@ -209,7 +195,7 @@ Two important parameters for the .drop_duplicates method:
 height_weight.drop_duplicates(inplace = True)
 ```
 
-### Grouping and aggregating duplicates
+Grouping and aggregating duplicates
 
 ```python
 # Group by columns and produce statistical summaries
@@ -223,7 +209,7 @@ duplicates = height_weight.duplicated(subset = column_names, keep = False)
 height_weight[duplicates].sort_values(by = 'first_name')
 ```
 
-### Another example of treating duplicates
+Another example of treating duplicates
 
 ```python
 # Drop complete duplicates from ride_sharing
@@ -243,9 +229,11 @@ duplicated_rides = ride_unique[duplicates == True]
 assert duplicated_rides.shape[0] == 0
 ```
 
-## Membership constraints
+## Text and categorical data problems
 
-### Finding inconsistent categories
+### Membership constraints
+
+Finding inconsistent categories
 
 `study_data`
 
@@ -288,7 +276,7 @@ consistent_data = study_data[~inconsistent_rows]
 | Household Income Category | `0-20k`, `20-40k`, ... | 0, 1, ... |
 | Loan Status | `default`, `payed`, `no_loan` | 0, 1, 2|
 
-#### Uppercase or lowercase
+Uppercase or lowercase
 
 ```python
 # Get marriage status column in Series
@@ -314,7 +302,7 @@ demographics['marriage_status'] = demographics['marriage_status'].str.upper()
 demographics['marriage_status'] = demographics['marriage_status'].str.lower()
 ```
 
-#### Trailing spaces
+Trailing spaces
 
 `married `, ` married`, `unmarried`, ` unmarried`
 
@@ -322,9 +310,9 @@ demographics['marriage_status'] = demographics['marriage_status'].str.lower()
 demographics['marriage_status'] = demographics['marriage_status'].str.strip()
 ```
 
-#### Collapsing data into categories
+Collapsing data into categories
 
-##### Using qcut - can lead to errors
+Using qcut - can lead to errors
 
 ```python
 import pandas as pd
@@ -337,7 +325,7 @@ demographics['income_group'] = pd.qcut(demographics['household_income'], q = 3, 
 print(demographics['income_group', 'household_income'])
 ```
 
-##### Using cut - better, more precise
+Using cut - better, more precise
 
 ```python
 # Create categoriy ranges and names
@@ -351,7 +339,7 @@ demographics['income_group'] = pd.cut(demographics['household_income'], bins=ran
 print(demographics['income_group', 'household_income'])
 ```
 
-##### Mapping categories to fewer ones
+Mapping categories to fewer ones
 
 ```python
 mapping = {
@@ -369,7 +357,7 @@ devices['operating_system'] = devices['operating_system'].replace(mapping)
 devices['operating_system'].unique()
 ```
 
-##### Another example of remapping categories
+Another example of remapping categories
 
 ```python
 # Create ranges for categories
@@ -393,7 +381,9 @@ mappings = {
 airlines['day_week'] = airlines['day'].replace(mappings)
 ```
 
-### Removing titles and taking names
+### Cleaning text data
+
+Removing titles and taking names
 
 ```python
 # Replace "Dr." with empty string ""
@@ -412,7 +402,7 @@ airlines['full_name'] = airlines['full_name'].str.replace("Ms.","")
 assert airlines['full_name'].str.contains('Ms.|Mr.|Miss|Dr.').any() == False
 ```
 
-### Keeping it descriptive
+Keeping it descriptive
 
 ```python
 # Store length of each row in survey_response column
@@ -427,6 +417,8 @@ assert airlines_survey['survey_response'].str.len().min() > 40
 # Print new survey_response column
 print(airlines_survey['survey_response'])
 ```
+
+## Advanced data problems
 
 ### Uniform currencies
 
@@ -509,6 +501,7 @@ data_imputed.head()
     - Systematic relationship between missing data and other **unobserved** values
     - Example: missing temperature values for high temperatures
 
+## Record linkage
 
 ### Comparing strings
 
