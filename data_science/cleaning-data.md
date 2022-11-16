@@ -36,7 +36,8 @@
     - [Linking dataframes](#linking-dataframes)
 ---
 ## Data type constraints
-```
+
+```python
 # Import CSV file and output header
 sales = pd.read_csv('sales.csv')
 sales.head(2)
@@ -66,8 +67,10 @@ df['marriage_status'] = df['marriage_status'].astype('category')
 ```
 
 ### Numeric or categorical
+
 Categoricals are a pandas data type corresponding to categorical variables in statistics. A categorical variable takes on a limited, and usually fixed, number of possible values (categories; levels in R). Examples are gender, social class, blood type, country affiliation, observation time or rating.
-```
+
+```python
 # Before converting to categorical
 df['marriage_status'].describe()
 ```
@@ -77,7 +80,7 @@ df['marriage_status'].describe()
 | std | 0.20 |
 | min | 0.00 |
 | 50% | 1.8 |
-```
+```python
 # Convert to categorical
 df['marriage_status'] = df['marriage_status'].astype('category')
 
@@ -94,13 +97,15 @@ df.describe()
 ## Finding out of range data
 
 ### Numeric data range constraints
-```
+
+```python
 # Output movies with rating > 5
 movies[movies['avg_rating'] > 5]
 ```
 
 #### Dropping out of range data
-```
+
+```python
 # Drop values using filtering
 movies = movies[movies['avg_rating'] <= 5]
 
@@ -113,7 +118,8 @@ assert movies['avg_rating'].max() <= 5
 ```
 
 #### Setting custom minimums and maximums
-```
+
+```python
 # Convert avg_rating > 5 to 5
 movies.loc[movies['avg_rating'] > 5, 'avg_rating'] = 5
 
@@ -122,27 +128,29 @@ assert movies['avg_rating'].max() <= 5
 ```
 
 ### Date range constraints
-```
+
+```python
 import pandas as pd
 import datetime as dt
 
 # Output data types
 user_signups.dtypes
-
 ```
+
 | dtypes | |
 | ---- | ---- |
 | subscription_date | object |
 | user_name | object |
 | Country | object |
 
-```
+```python
 # Convert to date
 user_signups['subscription_date'] = pd.to_datetime(user_signups['subscription_date']).dt.date
 ```
 
 #### Dropping values
-```
+
+```python
 today_date = dt.date.today()
 
 # Drop values using filtering
@@ -153,7 +161,8 @@ user_signups.drop(user_signups[user_signups['subscription_date'] > today_date].i
 ```
 
 #### Hardcoding dates with upper limit
-```
+
+```python
 today_date = dt.date.today()
 
 # Hardcoding future dates to today
@@ -166,7 +175,8 @@ assert user_signups['subscription_date'].max().date() <= today_date
 ## Uniqueness constraints
 
 ### Finding duplicates
-```
+
+```python
 # Get duplicates across all columns
 duplicates = height_weight.duplicated()
 height_weight[duplicates]
@@ -176,7 +186,7 @@ Important parameters for the duplicated method:
 * subset: List of column names to check for duplication
 * keep: Whether to keep **first** (`'first'`), **last** (`'last'`) or **all** (`False`) duplicate values.
 
-```
+```python
 # Column names to check for duplication
 column_names = ['first_name', 'last_name', 'address']
 
@@ -188,18 +198,20 @@ height_weight[duplicates].sort_values(by = 'first_name')
 ```
 
 ### How to treat duplicated value
+
 Two important parameters for the .drop_duplicates method:
 * subset: List of column names to check for duplication
 * keep: Whether to keep **first** (`'first'`), **last** (`'last'`) or **all** (`False`) duplicate values.
 * inplace: If `True`, drops duplicated rows directly inside DataFrame without creating new object
 
-```
+```python
 # Drop duplicates
 height_weight.drop_duplicates(inplace = True)
 ```
 
 ### Grouping and aggregating duplicates
-```
+
+```python
 # Group by columns and produce statistical summaries
 column_names = ['first_name', 'last_name', 'address']
 summaries = {'height': max, 'weight': 'mean'}
@@ -212,7 +224,8 @@ height_weight[duplicates].sort_values(by = 'first_name')
 ```
 
 ### Another example of treating duplicates
-```
+
+```python
 # Drop complete duplicates from ride_sharing
 ride_dup = ride_sharing.drop_duplicates()
 
@@ -231,9 +244,10 @@ assert duplicated_rides.shape[0] == 0
 ```
 
 ## Membership constraints
+
 ### Finding inconsistent categories
 
-study_data
+`study_data`
 
 | Name | birthday | blood_type |
 | --- | --- | --- |
@@ -242,7 +256,7 @@ study_data
 | ... | ... | ... |
 | Chloe | 2015-10-26 | <span style="color:red">Z-</style> |
 
-categories
+`categories`
 
 | blood_type | |
 | --- | --- |
@@ -255,7 +269,7 @@ categories
 | 7 | AB- |
 | 8 | AB+ |
 
-```
+```python
 # Find inconsistent data
 inconsistent_categories = set(study_data['blood_type']).difference(categories['blood_type'])
 
@@ -267,6 +281,7 @@ consistent_data = study_data[~inconsistent_rows]
 ```
 
 ### Categorical variables
+
 | Type of data | Example Values | Numeric representation |
 | ----------- | ----------- | ----------- |
 | Marriage Status | `unmarried`, `married`| 0, 1 |
@@ -274,7 +289,8 @@ consistent_data = study_data[~inconsistent_rows]
 | Loan Status | `default`, `payed`, `no_loan` | 0, 1, 2|
 
 #### Uppercase or lowercase
-```
+
+```python
 # Get marriage status column in Series
 marriage_status = demographics['marriage_status']
 marriage_status.value_counts()
@@ -290,7 +306,7 @@ demographics.groupby('marriage_status').count()
 | MARRIED | 204 | 204 |
 | UNMARRIED | 176 | 176 |
 
-```
+```python
 # Capitalize
 demographics['marriage_status'] = demographics['marriage_status'].str.upper()
 
@@ -299,15 +315,18 @@ demographics['marriage_status'] = demographics['marriage_status'].str.lower()
 ```
 
 #### Trailing spaces
+
 `married `, ` married`, `unmarried`, ` unmarried`
-```
+
+```python
 demographics['marriage_status'] = demographics['marriage_status'].str.strip()
 ```
 
 #### Collapsing data into categories
 
 ##### Using qcut - can lead to errors
-```
+
+```python
 import pandas as pd
 
 group_names = ['0-200k', '200k-500k', '500k+']
@@ -319,7 +338,8 @@ print(demographics['income_group', 'household_income'])
 ```
 
 ##### Using cut - better, more precise
-```
+
+```python
 # Create categoriy ranges and names
 ranges = [0, 200000, 500000, np.inf]
 group_names = ['0-200k', '200k-500k', '500k+']
@@ -332,7 +352,8 @@ print(demographics['income_group', 'household_income'])
 ```
 
 ##### Mapping categories to fewer ones
-```
+
+```python
 mapping = {
     'Microsoft': 'DesktopOS',
     'MacOS': 'DesktopOS',
@@ -348,8 +369,9 @@ devices['operating_system'] = devices['operating_system'].replace(mapping)
 devices['operating_system'].unique()
 ```
 
-##### Another example of remapping categories
-```
+##### Another example of remapping categories]
+
+```python
 # Create ranges for categories
 label_ranges = [0, 60, 180, np.inf]
 label_names = ['short', 'medium', 'long']
@@ -372,7 +394,8 @@ airlines['day_week'] = airlines['day'].replace(mappings)
 ```
 
 ### Removing titles and taking names
-```
+
+```python
 # Replace "Dr." with empty string ""
 airlines['full_name'] = airlines['full_name'].str.replace("Dr.","")
 
@@ -390,7 +413,8 @@ assert airlines['full_name'].str.contains('Ms.|Mr.|Miss|Dr.').any() == False
 ```
 
 ### Keeping it descriptive
-```
+
+```python
 # Store length of each row in survey_response column
 resp_length = airlines['survey_response'].str.len()
 
@@ -405,7 +429,8 @@ print(airlines_survey['survey_response'])
 ```
 
 ### Uniform currencies
-```
+
+```python
 # Find values of acct_cur that are equal to 'euro'
 acct_eu = banking['acct_cur'] == 'euro'
 
@@ -420,7 +445,8 @@ assert banking['acct_cur'].unique() == 'dollar'
 ```
 
 ### Data integrity
-```
+
+```python
 # Store fund columns to sum against
 fund_columns = ['fund_A', 'fund_B', 'fund_C', 'fund_D']
 
@@ -437,7 +463,7 @@ print("Number of inconsistent investments: ", inconsistent_inv.shape[0])
 
 ### Completeness
 
-```
+```python
 import missingno as msno
 import matplotlib.pyplot as plt
 
@@ -472,6 +498,7 @@ data_imputed.head()
 ```
 
 #### Missingness types
+
 - Missing completely at random (MCAR)
     - No systematic relationship between missing data and other values
     - Possibly caused by data entry errors when inputting data
@@ -484,9 +511,10 @@ data_imputed.head()
 
 
 ### Comparing strings
+
 **Edit distance**: a string metric, i.e. a way of quantifying how dissimilar two strings (e.g., words) are to one another. Steps required to turn a string into another.
 
-```
+```python
 from thefuzz import fuzz, process
 
 # Result ranges from 0 (no similarity) to 100 (exactly equal)
@@ -521,7 +549,8 @@ for team in categories['team']:
 ```
 
 ### Generating pairs
-```
+
+```python
 import recordlinkage
 
 # Create indexing object
@@ -547,7 +576,8 @@ potential_matches = compare_cl.compute(pairs, census_A, census_B)
 ```
 
 ### Linking dataframes
-```
+
+```python
 # Isolate matches with matching values for 3 or more columns
 matches = potential_matches[potential_matches.sum(axis = 1) >= 3]
 
