@@ -1,3 +1,5 @@
 .env
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+
+working-with-data/files/MNIST.txt
