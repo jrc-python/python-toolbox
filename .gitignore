@@ -2,7 +2,8 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
-working-with-data/files/MNIST.txt
-working-with-data/files/huck_finn.txt
-working-with-data/files/Northwind-new.sqlite
-working-with-data/files/tweets.txt
+2-importing-data/files/MNIST.txt
+2-importing-data/files/huck_finn.txt
+2-importing-data/files/Northwind-new.sqlite
+2-importing-data/files/tweets.txt
+3-cleaning-data/files/ride_sharing_bugged.csv

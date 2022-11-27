@@ -1,4 +1,4 @@
-,duration,station_A_id,station_A_name,station_B_id,station_B_name,bike_id,user_type,user_birth_year,user_gender
+ride_id,duration,station_A_id,station_A_name,station_B_id,station_B_name,bike_id,user_type,user_birth_year,user_gender
 0,12 minutes,81,Berry St at 4th St,323,Broadway at Kearny,5480,2,1959,Male
 1,24 minutes,3,Powell St BART Station (Market St at 4th St),118,Eureka Valley Recreation Center,5193,2,1965,Male
 2,8 minutes,67,San Francisco Caltrain Station 2  (Townsend St at 4th St),23,The Embarcadero at Steuart St,3652,3,1993,Male
