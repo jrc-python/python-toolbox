@@ -5,3 +5,4 @@ seaborn
 faker
 missingno
 recordlinkage
+python-levenshtein
