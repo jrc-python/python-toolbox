@@ -5,6 +5,8 @@ matplotlib
 numpy
 requests
 python-dotenv
+sqlalchemy
+psycopg2
 tweepy
 seaborn
 faker
