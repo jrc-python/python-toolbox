@@ -7,6 +7,7 @@ requests
 python-dotenv
 sqlalchemy
 psycopg2
+openpyxl
 tweepy
 seaborn
 faker
