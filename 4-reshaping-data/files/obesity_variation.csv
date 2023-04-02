@@ -1,4 +1,4 @@
-year,type,country,biological_sex,0
+year,type,country,biological_sex,value
 1995,perc_obesity,France,Female,15.3
 1995,perc_obesity,France,Male,12.8
 1995,perc_obesity,Germany,Female,14.4
